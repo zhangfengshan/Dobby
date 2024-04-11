@@ -21,13 +21,7 @@ jobs:
           sudo apt-get install -y build-essential  # Sesuaikan kebutuhan Anda
       
       # Langkah untuk memulihkan cache
-      
-      - name: Install dependencies
-        run: |
-          # Perintah instalasi dengan caching
-          # Sesuaikan dengan proyek Anda, misalnya menggunakan perintah dari paket manager
-          sudo apt-get install -y your-dependencies
-
+    
       # Langkah untuk menyimpan cache
     
       - name: Run script
