@@ -35,40 +35,43 @@ jobs:
       - name: Run Python
         run: |
           python3 scripts/platform_builder.py --platform=linux --arch=all --cmake_dir=$HOME/opt/cmake-3.25.2 --llvm_dir=$HOME/opt/llvm-15.0.6
+          
       - name: LS
         run: |
           ls
-      - name: Save Cache
-        uses: actions/cache@v3
-        with:
-          path: /opt
-          key: ${{ runner.os }}-opt-cache-${{ hashFiles('requirements.txt') }}  # Gunakan kunci yang sama
-        continue-on-error: true
 
-      - name: Restore Cache
-        uses: actions/cache@v3
-        with:
-          path: /opt
-          key: ${{ runner.os }}-opt-cache-${{ hashFiles('requirements.txt') }}  # Kunci cache, misalnya berdasarkan hash file yang relevan
+      - name: Tree
+        run: |
+          apt install tree
         continue-on-error: true
-      # Langkah-langkah lain...
+      - name: run tree
+        run: |
+          tree
+        continue-on-error: true
+        
+
       
     # continue-on-error: true
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
+      - run : Upload
+      - uses: actions/upload-artifact@v4
         with:
-          tag_name: v1.0.0  # Sesuaikan tag sesuai kebutuhan Anda
-          release_name: Release v1.0.0
-          body: Release description goes here.
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: my-artifact
+          path: /build # or path/to/artifact
+        continue-on-error: true
+      - run : Upload 2
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: my-artifact
+          path: build # or path/to/artifact
+        continue-on-error: true
 
-      - name: Upload build artifact to release
-        uses: actions/upload-artifact@v3
+      - name: 'Tar files'
+        run: tar -cvf my_files.tar /build
+        continue-on-error: true
+      - name: Upload 3
+        uses: actions/upload-artifact@v4
         with:
-          name: build-artifact
-          path: build
-          release: true  # Lampir
-     
+          name: my-artifact
+          path: build.tar
+        continue-on-error: true
