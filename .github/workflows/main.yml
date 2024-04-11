@@ -1,0 +1,54 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Mesin Ubuntu untuk menjalankan perintah Debian
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Setup Debian Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential  # Sesuaikan kebutuhan Anda
+      
+      # Langkah untuk memulihkan cache
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/myproject  # Sesuaikan dengan direktori atau file yang ingin Anda cache
+          key: ${{ runner.os }}-myproject-${{ hashFiles('requirements.txt') }}  # Kunci cache berdasarkan file yang relevan
+
+      - name: Install dependencies
+        run: |
+          # Perintah instalasi dengan caching
+          # Sesuaikan dengan proyek Anda, misalnya menggunakan perintah dari paket manager
+          sudo apt-get install -y your-dependencies
+
+      # Langkah untuk menyimpan cache
+      - name: Save Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/myproject  # Sesuaikan dengan direktori atau file yang ingin Anda cache
+          key: ${{ runner.os }}-myproject-${{ hashFiles('requirements.txt') }}
+
+      - name: Run script
+        run: |
+          # Sesuaikan perintah ini untuk menjalankan pengujian proyek Anda
+          sh scripts/setup_linux_cross_compile.sh 
+      - name: Run Python
+        run: |
+          python3 scripts/platform_builder.py --platform=linux --arch=all --cmake_dir=$HOME/opt/cmake-3.25.2 --llvm_dir=$HOME/opt/llvm-15.0.6
+      # - name: Deploy
+      #   if: github.ref == 'refs/heads/main'  # Deploy hanya ketika ada perubahan di branch utama
+      #   run: |
+      #     # Sesuaikan perintah ini untuk mengotomatiskan deployment
+      #     ./deploy.sh
