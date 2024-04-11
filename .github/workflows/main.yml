@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest  # Mesin Ubuntu untuk menjalankan perintah Debian
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       - name: Setup Debian Environment
         run: |
@@ -34,5 +34,40 @@ jobs:
       - name: LS
         run: |
           ls
+      - name: Cache Primes
+        id: cache-primes
+        uses: actions/cache@v4
+        with:
+          path: prime-numbers
+          key: ${{ runner.os }}-primes
 
+      - name: Generate Prime Numbers
+        if: steps.cache-primes.outputs.cache-hit != 'true'
+        run: /generate-primes.sh -d prime-numbers
+
+      - name: Use Prime Numbers
+        run: /primes.sh -d prime-numbers
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: /build  # Folder build yang ingin Anda rilis
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v1.0.0  # Sesuaikan tag sesuai kebutuhan Anda
+          release_name: Release v1.0.0
+          body: Release description goes here.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifact to release
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: /build
+          release: true  # Lampir
      
