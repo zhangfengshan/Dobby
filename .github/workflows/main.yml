@@ -23,7 +23,11 @@ jobs:
       # Langkah untuk memulihkan cache
     
       # Langkah untuk menyimpan cache
-    
+      - name: LS opt
+        run: |
+          ls ~/opt
+        continue-on-error: true
+        
       - name: Run script
         run: |
           # Sesuaikan perintah ini untuk menjalankan pengujian proyek Anda
@@ -34,25 +38,22 @@ jobs:
       - name: LS
         run: |
           ls
-      - name: Cache Primes
-        id: cache-primes
-        uses: actions/cache@v4
+      - name: Save Cache
+        uses: actions/cache@v3
         with:
-          path: prime-numbers
-          key: ${{ runner.os }}-primes
+          path: /opt
+          key: ${{ runner.os }}-opt-cache-${{ hashFiles('requirements.txt') }}  # Gunakan kunci yang sama
+        continue-on-error: true
 
-      - name: Generate Prime Numbers
-        if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: /generate-primes.sh -d prime-numbers
-
-      - name: Use Prime Numbers
-        run: /primes.sh -d prime-numbers
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+      - name: Restore Cache
+        uses: actions/cache@v3
         with:
-          name: build-artifact
-          path: /build  # Folder build yang ingin Anda rilis
-
+          path: /opt
+          key: ${{ runner.os }}-opt-cache-${{ hashFiles('requirements.txt') }}  # Kunci cache, misalnya berdasarkan hash file yang relevan
+        continue-on-error: true
+      # Langkah-langkah lain...
+      
+    # continue-on-error: true
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
@@ -68,6 +69,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: /build
+          path: build
           release: true  # Lampir
      
