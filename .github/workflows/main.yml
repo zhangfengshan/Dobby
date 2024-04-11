@@ -31,8 +31,8 @@ jobs:
       - name: Run Python
         run: |
           python3 scripts/platform_builder.py --platform=linux --arch=all --cmake_dir=$HOME/opt/cmake-3.25.2 --llvm_dir=$HOME/opt/llvm-15.0.6
-      # - name: Deploy
-      #   if: github.ref == 'refs/heads/main'  # Deploy hanya ketika ada perubahan di branch utama
-      #   run: |
-      #     # Sesuaikan perintah ini untuk mengotomatiskan deployment
-      #     ./deploy.sh
+      - name: LS
+        run: |
+          ls
+
+     
