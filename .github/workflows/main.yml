@@ -21,12 +21,7 @@ jobs:
           sudo apt-get install -y build-essential  # Sesuaikan kebutuhan Anda
       
       # Langkah untuk memulihkan cache
-      - name: Restore Cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/myproject  # Sesuaikan dengan direktori atau file yang ingin Anda cache
-          key: ${{ runner.os }}-myproject-${{ hashFiles('requirements.txt') }}  # Kunci cache berdasarkan file yang relevan
-
+      
       - name: Install dependencies
         run: |
           # Perintah instalasi dengan caching
@@ -34,12 +29,7 @@ jobs:
           sudo apt-get install -y your-dependencies
 
       # Langkah untuk menyimpan cache
-      - name: Save Cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/myproject  # Sesuaikan dengan direktori atau file yang ingin Anda cache
-          key: ${{ runner.os }}-myproject-${{ hashFiles('requirements.txt') }}
-
+    
       - name: Run script
         run: |
           # Sesuaikan perintah ini untuk menjalankan pengujian proyek Anda
