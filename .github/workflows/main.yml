@@ -52,22 +52,22 @@ jobs:
 
       
     # continue-on-error: true
-      - run : Upload
-      - uses: actions/upload-artifact@v4
+      - name: Upload 1
+        uses: actions/upload-artifact@v4
         with:
-          name: my-artifact
-          path: /build # or path/to/artifact
+            name: my-artifact
+            path: /build # or path/to/artifact
         continue-on-error: true
-      - run : Upload 2
-      
+ 
+      - name: Upload 2
       - uses: actions/upload-artifact@v4
         with:
           name: my-artifact
           path: build # or path/to/artifact
         continue-on-error: true
 
-      - name: 'Tar files'
-        run: tar -cvf my_files.tar /build
+      - name: Tar
+        run: tar -cvf build.tar /build
         continue-on-error: true
       - name: Upload 3
         uses: actions/upload-artifact@v4
